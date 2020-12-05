@@ -1,17 +1,32 @@
 <template>
 	<view>
 		<!-- 推流组件 aspect:比例 -->
-		<live-pusher id="livePusher" ref="livePusher" class="livePusher" :url="url" :mode="mode" :enable-camera="enableCamera"
-		 :auto-focus="true" :device-position="position" :beauty="beauty" :whiteness="whiteness" aspect="9:16" @statechange="statechange"
-		 @netstatus="netstatus" @error="error" :style="'height:'+windowHeight+'px;'" style="width: 750rpx;"></live-pusher>
+		<live-pusher
+			id="livePusher"
+			ref="livePusher"
+			class="livePusher"
+			:url="url"
+			:mode="mode"
+			:enable-camera="enableCamera"
+			:auto-focus="true"
+			:device-position="position"
+			:beauty="beauty"
+			:whiteness="whiteness"
+			aspect="9:16"
+			@statechange="statechange"
+			@netstatus="netstatus"
+			@error="error"
+			:style="'height:' + windowHeight + 'px;'"
+			style="width: 750rpx;"
+		></live-pusher>
 
 		<!-- v-if="showBars" 包裹除了推流组件的所有组件，为了解决退出页面的黑边问题 -->
 		<!-- <view v-if="showBars"> -->
-		<view style="position: fixed;left: 0;right: 0;height: 600rpx;" :style="'top:'+statusBarHeight+'px;'">
-			<view class="flex align-center justify-center" style="width: 90rpx;height: 90rpx;" @click="closePage">
+		<view style="position: fixed;left: 0;right: 0;height: 600rpx;" :style="'top:' + statusBarHeight + 'px;'">
+			<!-- <view class="flex align-center justify-center" style="width: 90rpx;height: 90rpx;" @click="closePage">
 				<text class="iconfont text-white">&#xe617;</text>
 			</view>
-			<!-- 中间部分 -->
+			中间部分
 			<view class="position-absolute rounded p-2 flex align-center" style="left: 90rpx;right: 100rpx;height: 160rpx;background-color: rgba(0,0,0,0.2);">
 				<view style="width: 120rpx;height: 120rpx;" class="position-relative rounded" @click="chooseCover">
 					<image :src="form.cover||'../../static/gift/3.png'" style="width: 120rpx;height: 120rpx;"></image>
@@ -19,9 +34,9 @@
 				</view>
 				<view class="flex-1 ml-2">
 					<input type="text" v-model="form.title" placeholder="请输入标题" class="bg-main text-white mb-2" />
-					<!-- <text class="text-white font">请选择分类</text> -->
+					<text class="text-white font">请选择分类</text>
 				</view>
-			</view>
+			</view> -->
 			<!-- 右侧 -->
 			<view class="position-absolute right-0 flex flex-column rounded" style="background-color: rgba(0,0,0,0.2);">
 				<view style="width: 100rpx;height: 140rpx;" class="flex flex-column align-center justify-center" @click="switchCamera">
@@ -42,36 +57,31 @@
 				</view>
 			</view>
 			<!-- 下方按钮 -->
-			<view class="position-fixed bg-main flex align-center justify-center rounded" style="left: 100rpx;bottom: 100rpx;right: 100rpx;height: 100rpx;"
-			 @click="openLiveRoom">
+			<view v-if="show" class="position-fixed bg-main flex align-center justify-center rounded" style="left: 100rpx;bottom: 100rpx;right: 100rpx;height: 100rpx;" @click="start">
 				<text class="text-white font-md">开始视频直播</text>
+			</view>
+			<view v-else class="position-fixed bg-main flex align-center justify-center rounded" style="left: 100rpx;bottom: 100rpx;right: 100rpx;height: 100rpx;" @click="stop">
+				<text class="text-white font-md">关闭视频直播</text>
 			</view>
 		</view>
 
 		<uni-popup type="bottom" ref="popup">
 			<view class="bg-white">
 				<view class="flex align-center justify-center border-bottom" style="height: 90rpx;">
-					<text class="font-md">{{popupTitle}}</text>
+					<text class="font-md">{{ popupTitle }}</text>
 				</view>
 				<!-- 中间部分 -->
 				<!-- 画质选择 -->
-				<view v-if="popupType==='mode'">
-					<view v-for="(item,index) in modeList" class="flex align-center justify-center py-2" :class="mode===item.type?'bg-main':''"
-					 @click="chooseMode(item)">
-						<text class="font-md" :class="mode===item.type?'text-white':''">{{item.desc}}</text>
+				<view v-if="popupType === 'mode'">
+					<view v-for="(item, index) in modeList" class="flex align-center justify-center py-2" :class="mode === item.type ? 'bg-main' : ''" @click="chooseMode(item)">
+						<text class="font-md" :class="mode === item.type ? 'text-white' : ''">{{ item.desc }}</text>
 					</view>
 				</view>
 				<!-- 美颜美白 -->
-				<view v-else-if="popupType === 'beauty'">
-					<slider :min="0" :max="9" :step="1" :value="beauty" :block-size="18" show-value @change="handelSliderChange" />
-				</view>
-				<view v-else>
-					<slider :min="0" :max="9" :step="1" :value="whiteness" :block-size="18" show-value @change="handelSliderChange" />
-				</view>
+				<view v-else-if="popupType === 'beauty'"><slider :min="0" :max="9" :step="1" :value="beauty" :block-size="18" show-value @change="handelSliderChange" /></view>
+				<view v-else><slider :min="0" :max="9" :step="1" :value="whiteness" :block-size="18" show-value @change="handelSliderChange" /></view>
 				<view class="f-divider"></view>
-				<view class="flex align-center justify-center" style="height: 90rpx;" hover-class="bg-light" @click="$refs.popup.close()">
-					<text class="font-md">取消</text>
-				</view>
+				<view class="flex align-center justify-center" style="height: 90rpx;" hover-class="bg-light" @click="$refs.popup.close()"><text class="font-md">取消</text></view>
 			</view>
 		</uni-popup>
 		<!-- </view> -->
@@ -79,160 +89,166 @@
 </template>
 
 <script>
-	import uniPopup from "@/components/uni-ui/uni-popup/uni-popup.vue"
-	import $H from "@/common/js/request.js"
-	import $C from "@/common/js/config.js"
-	import {
-		mapState
-	} from "vuex"
-	export default {
-		components: {
-			uniPopup
-		},
-		data() {
-			return {
-				url: '', // 推流地址
-				mode: 'SD', // 视频模式：标清
-				enableCamera: true, // 开启摄像头
-				position: 'front', // 前置(front)还是后置(back)摄像头 
-				beauty: 0, // 美颜： 0-9
-				whiteness: 0, // 美白 0-9
-				windowHeight: 0,
-				context: null,
-				statusBarHeight: 0, // 状态栏高度
-
-				modeList: [{
+import uniPopup from '@/components/uni-ui/uni-popup/uni-popup.vue';
+import $H from '@/common/js/request.js';
+import $C from '@/common/js/config.js';
+import { mapState } from 'vuex';
+export default {
+	components: {
+		uniPopup
+	},
+	data() {
+		return {
+			url: 'rtmp://txlive02.pincll.net/live/j4e2t?txSecret=af68cd067b98dabefd4aada49ee9a18f&txTime=5FCB6B49', // 推流地址
+			mode: 'SD', // 视频模式：标清
+			enableCamera: true, // 开启摄像头
+			position: 'front', // 前置(front)还是后置(back)摄像头
+			beauty: 0, // 美颜： 0-9
+			whiteness: 0, // 美白 0-9
+			windowHeight: 0,
+			context: null,
+			statusBarHeight: 0, // 状态栏高度
+			show:true,
+			modeList: [
+				{
 					type: 'SD',
 					desc: '标清'
-				}, {
+				},
+				{
 					type: 'HD',
 					desc: '高清'
-				}, {
+				},
+				{
 					type: 'FHD',
 					desc: '超清'
-				}],
-				popupType: 'mode',
-				// showBars: true, // 解决黑边问题
-
-				form: {
-					title: "",
-					cover: ""
 				}
+			],
+			popupType: 'mode',
+			// showBars: true, // 解决黑边问题
+
+			form: {
+				title: '',
+				cover: ''
 			}
-		},
-		onLoad() {
-			let res = uni.getSystemInfoSync();
-			this.windowHeight = res.windowHeight;
-			this.statusBarHeight = res.statusBarHeight;
-		},
-		onReady() {
-			this.context = uni.createLivePusherContext('livePusher', this)
-			this.startPreview()
-		},
-		// onBackPress() {
-		// 	this.showBars = false
-		// },
-		computed: {
-			...mapState({
-				token: state => state.token
-			}),
-			popupTitle() {
-				let o = {
-					mode: '画质',
-					beauty: '美颜',
-					whiteness: '美白'
+		};
+	},
+	onLoad() {
+		let res = uni.getSystemInfoSync();
+		this.windowHeight = res.windowHeight;
+		this.statusBarHeight = res.statusBarHeight;
+	},
+	onReady() {
+		this.context = uni.createLivePusherContext('livePusher', this);
+		this.startPreview();
+	},
+	// onBackPress() {
+	// 	this.showBars = false
+	// },
+	computed: {
+		...mapState({
+			token: state => state.token
+		}),
+		popupTitle() {
+			let o = {
+				mode: '画质',
+				beauty: '美颜',
+				whiteness: '美白'
+			};
+			return o[this.popupType];
+		}
+	},
+	methods: {
+		// 开启预览
+		startPreview() {
+			this.context.startPreview({
+				success: e => {
+					console.log(e);
 				}
-				return o[this.popupType]
-			}
+			});
 		},
-		methods: {
-			// 开启预览
-			startPreview() {
-				this.context.startPreview({
-					success: (e) => {
-						console.log(e)
-					}
-				})
-			},
-			// 直播状态变化
-			statechange(e) {
-
-			},
-			// 直播网络变化
-			netstatus(e) {
-
-			},
-			// 发生错误
-			error(e) {
-
-			},
-			// 切换镜头
-			switchCamera() {
-				this.context.switchCamera({
-					success: (e) => {
-						this.position = this.position === 'back' ? 'front' : 'back'
-					}
-				})
-			},
-			// 弹出选择画质框
-			openPopup(key) {
-				this.popupType = key
-				this.$refs.popup.open()
-			},
-			// 画质变更
-			chooseMode(item) {
-				this.mode = item.type
-				uni.showToast({
-					title: `画质切换为${item.desc}`,
-					icon: 'none'
-				});
-				this.$refs.popup.close()
-			},
-			// 美颜美白选项改变
-			handelSliderChange(e) {
-				this[this.popupType] = e.detail.value
-			},
-			openLiveRoom() {
-				$H.post('/live/create', this.form, {
-					token: true
-				}).then(res => {
-					uni.navigateTo({
-						url: "../liveroom/liveroom?options=" + JSON.stringify({
-								mode: this.mode,
-								position: this.position,
-								beauty: this.beauty,
-								whiteness: this.whiteness
-							}) + '&data=' +
-							encodeURIComponent(JSON.stringify(res))
-					})
-				})
-			},
-			closePage() {
-				uni.navigateBack({
-					delta: 1
-				})
-			},
-			// upload img
-			chooseCover() {
-				uni.chooseImage({
-					count: 1,
-					success: (res) => {
-						$H.upload('/upload', {
+		// 直播状态变化
+		statechange(e) {},
+		// 直播网络变化
+		netstatus(e) {},
+		// 发生错误
+		error(e) {},
+		// 切换镜头
+		switchCamera() {
+			this.context.switchCamera({
+				success: e => {
+					this.position = this.position === 'back' ? 'front' : 'back';
+				}
+			});
+		},
+		// 弹出选择画质框
+		openPopup(key) {
+			this.popupType = key;
+			this.$refs.popup.open();
+		},
+		// 画质变更
+		chooseMode(item) {
+			this.mode = item.type;
+			uni.showToast({
+				title: `画质切换为${item.desc}`,
+				icon: 'none'
+			});
+			this.$refs.popup.close();
+		},
+		// 美颜美白选项改变
+		handelSliderChange(e) {
+			this[this.popupType] = e.detail.value;
+		},
+		// 开始直播
+		start() {
+			this.context.start({
+				success: a => {
+					console.log('livePusher.start:' + JSON.stringify(a));
+					this.show = false
+				},
+				error: err => {
+					console.log(err);
+				}
+			});
+		},
+		// 停止直播
+		stop() {
+			this.context.stop({
+				success: a => {
+					console.log(JSON.stringify(a));
+					this.show = true
+				}
+			});
+		},
+		closePage() {
+			uni.navigateBack({
+				delta: 1
+			});
+		},
+		// upload img
+		chooseCover() {
+			uni.chooseImage({
+				count: 1,
+				success: res => {
+					$H.upload(
+						'/upload',
+						{
 							filePath: res.tempFilePaths[0]
-						}, (p) => {
+						},
+						p => {
 							// console.log('上传进度' + p);
-						}).then(res => {
-							this.form.cover = $C.imgUrl + res.url
-						}).catch(err => {
-							console.log('upload cover error');
+						}
+					)
+						.then(res => {
+							this.form.cover = $C.imgUrl + res.url;
 						})
-					}
-				})
-			}
+						.catch(err => {
+							console.log('upload cover error');
+						});
+				}
+			});
 		}
 	}
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

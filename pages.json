@@ -1,72 +1,12 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/index/index",
-			"style": {
-				"enablePullDownRefresh": true,
-				"app-plus": {
-					"titleNView": {
-						"titleText": "直播",
-						"titleAlign": "left",
-						"buttons": [{
-							"type": "menu"
-						}]
-					}
-				}
-			}
-		}, {
-			"path": "pages/my/my",
-			"style": {
-				"app-plus": {
-					"titleNView": {
-						"titleText": "我的",
-						"titleAlign": "left",
-						"buttons": [{
-							"type": "menu"
-						}]
-					}
-				}
-			}
-		}, {
-			"path": "pages/live/live",
-			"style": {
-				"app-plus": {
-					"titleNView": false
-				}
-			}
-		}, {
-			"path": "pages/coin/coin",
-			"style": {
-				"navigationBarTitleText": "我的余额",
-				"navigationBarBackgroundColor": "#FFFFFF",
-				"navigationBarTextStyle": "black"
-			}
-		}, {
 			"path": "pages/create-live/create-live",
 			"style": {
 				"app-plus": {
 					"titleNView": false
 				},
 				"backgroundColor": "#cccccc"
-			}
-		}, {
-			"path": "pages/liveroom/liveroom",
-			"style": {
-				"app-plus": {
-					"titleNView": false
-				},
-				"backgroundColor": "#494F54"
-			}
-		}, {
-			"path": "pages/login/login",
-			"style": {
-				"navigationBarTitleText": "登录注册"
-			}
-		}, {
-			"path": "pages/user-set/user-set",
-			"style": {
-				"navigationBarTitleText": "我的设置",
-				"enablePullDownRefresh": false
 			}
 		}
 	],
@@ -86,16 +26,6 @@
 			"iconWidth": "60px",
 			"height": "65px"
 		},
-		"list": [{
-			"iconPath": "static/tabbar/find.png",
-			"selectedIconPath": "static/tabbar/find-selected.png",
-			"pagePath": "pages/index/index",
-			"text": "发现"
-		}, {
-			"iconPath": "static/tabbar/my.png",
-			"selectedIconPath": "static/tabbar/my-selected.png",
-			"pagePath": "pages/my/my",
-			"text": "我的"
-		}]
+		"list": []
 	}
 }
